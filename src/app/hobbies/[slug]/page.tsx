@@ -1,12 +1,19 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
 import { Navbar } from "@/components/layout/Navbar"
+import { Reveal } from "@/components/Reveal"
+import { WeatherScope } from "@/components/weather/WeatherProvider"
+import { WeatherDock } from "@/components/weather/WeatherDock"
+import { SEASON_WEATHERS } from "@/lib/weather"
 
-const hobbiesData: Record<string, any> = {
+const hobbiesData: Record<string, {
+  title: string
+  description: string
+  entries: { date: string; title: string; text: string; photo: string }[]
+}> = {
   "martial-arts": {
     title: "Martial Arts",
     description: "Training in various disciplines, building discipline, focus, and physical endurance.",
-    coverImage: "https://images.unsplash.com/photo-1555597673-b21d5c935865?q=80&w=2000&auto=format&fit=crop",
     entries: [
       {
         date: "May 20, 2026",
@@ -25,7 +32,6 @@ const hobbiesData: Record<string, any> = {
   "hiking": {
     title: "Hiking & Nature",
     description: "Exploring trails and finding inspiration in the organic patterns of the natural world.",
-    coverImage: "https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=2000&auto=format&fit=crop",
     entries: [
       {
         date: "June 02, 2026",
@@ -44,7 +50,6 @@ const hobbiesData: Record<string, any> = {
   "reading": {
     title: "Reading",
     description: "Constantly learning through geopolitical literature, economics, and sci-fi.",
-    coverImage: "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=2000&auto=format&fit=crop",
     entries: [
       {
         date: "May 28, 2026",
@@ -62,90 +67,64 @@ const hobbiesData: Record<string, any> = {
   }
 }
 
-export default function HobbyPage({ params }: { params: { slug: string } }) {
-  const hobby = hobbiesData[params.slug]
+export default async function HobbyPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const hobby = hobbiesData[slug]
 
   if (!hobby) {
     notFound()
   }
 
   return (
-    <div className="theme-spirit bg-surface-bright text-on-surface min-h-screen selection:bg-primary-container selection:text-on-primary-container font-sans relative overflow-hidden">
-      {/* Aesthetic Background Gradients */}
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/3 -z-10 pointer-events-none mix-blend-multiply"></div>
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/10 rounded-full blur-[100px] translate-y-1/3 -translate-x-1/3 -z-10 pointer-events-none mix-blend-multiply"></div>
-      
-      <div className="relative z-10">
-        <Navbar />
-        
-        <main className="min-h-screen pb-24">
-          {/* Hero Section */}
-          <section className="relative w-full max-w-5xl mx-auto px-4 md:px-8 mt-8 mb-16">
-            <Link href="/blog" className="inline-flex items-center gap-2 text-primary font-bold mb-6 hover:text-on-surface transition-colors">
-              <span className="material-symbols-outlined">arrow_back</span>
-              Back to Insights
-            </Link>
-            
-            <div className="relative w-full h-[50vh] md:h-[60vh] rounded-[32px] overflow-hidden flex items-end p-8 md:p-16 bg-black shadow-2xl">
-              {/* Cover Image */}
-              <div 
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105 transform hover:scale-110 transition-transform duration-[20s]" 
-                style={{ backgroundImage: `url(${hobby.coverImage})` }}
-              ></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent mix-blend-multiply"></div>
-              
-              {/* Glassmorphism Title */}
-              <div className="relative z-10 bg-white/10 backdrop-blur-md border border-white/20 p-8 rounded-3xl max-w-2xl text-white shadow-xl">
-                <h1 className="text-4xl md:text-6xl font-bold mb-4">{hobby.title}</h1>
-                <p className="text-lg md:text-xl text-white/90 leading-relaxed">
-                  {hobby.description}
-                </p>
-              </div>
-            </div>
-          </section>
+    // Local weather override: the Hobby section runs its own "4 Seasons
+    // Nature" sky, independent of the global dock.
+    <WeatherScope choices={SEASON_WEATHERS} defaultId="snow">
+      <Navbar />
+      <main className="max-w-4xl mx-auto px-6 md:px-10 pt-16 pb-32">
+        <div className="flex flex-wrap items-center justify-between gap-6 mb-16">
+          <Link href="/" className="eyebrow link-line pb-0.5">← Home</Link>
+          <div className="flex items-center gap-3">
+            <span className="eyebrow hidden sm:block">4 Seasons</span>
+            <WeatherDock inline />
+          </div>
+        </div>
 
-          {/* Diary Feed / Mini Blog Layout */}
-          <section className="w-full max-w-4xl mx-auto px-4 md:px-8">
-            <h2 className="text-3xl font-bold text-primary mb-12 flex items-center gap-3">
-              <span className="material-symbols-outlined text-[32px]">auto_stories</span>
-              Diary Entries
-            </h2>
-            
-            <div className="space-y-16">
-              {hobby.entries.map((entry: any, index: number) => (
-                <article key={index} className="flex flex-col md:flex-row gap-8 items-start group">
-                  {/* Date Column */}
-                  <div className="md:w-1/4 flex-shrink-0 pt-2">
-                    <div className="text-sm font-bold text-secondary uppercase tracking-widest mb-2 flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[16px]">calendar_today</span>
-                      {entry.date}
-                    </div>
+        <header className="mb-20">
+          <p className="eyebrow rise mb-6">Diary</p>
+          <h1 className="display text-5xl md:text-7xl rise" style={{ animationDelay: "0.1s" }}>
+            {hobby.title}
+            <span className="text-glacier">.</span>
+          </h1>
+          <p className="text-lg md:text-xl text-ink-soft max-w-2xl mt-8 leading-relaxed rise" style={{ animationDelay: "0.2s" }}>
+            {hobby.description}
+          </p>
+        </header>
+
+        <div className="space-y-20">
+          {hobby.entries.map((entry, i) => (
+            <Reveal key={i}>
+              <article className="grid md:grid-cols-12 gap-6 group">
+                <p className="md:col-span-3 font-mono text-xs text-ink-soft pt-2 tracking-widest uppercase">
+                  {entry.date}
+                </p>
+                <div className="md:col-span-9">
+                  <h2 className="display text-3xl mb-4 group-hover:text-glacier transition-colors">
+                    {entry.title}
+                  </h2>
+                  <p className="text-ink-soft text-lg leading-relaxed mb-8">{entry.text}</p>
+                  <div className="card-air arch overflow-hidden p-2">
+                    <img
+                      src={entry.photo}
+                      alt={entry.title}
+                      className="arch w-full h-[320px] md:h-[420px] object-cover group-hover:scale-[1.02] transition-transform duration-700"
+                    />
                   </div>
-                  
-                  {/* Content Column */}
-                  <div className="md:w-3/4 flex flex-col gap-4">
-                    <h3 className="text-2xl md:text-3xl font-display-md text-on-surface group-hover:text-primary transition-colors">
-                      {entry.title}
-                    </h3>
-                    <p className="text-on-surface-variant text-lg leading-relaxed mb-4">
-                      {entry.text}
-                    </p>
-                    
-                    {/* Entry Photo */}
-                    <div className="relative w-full h-[300px] md:h-[400px] rounded-2xl overflow-hidden shadow-md">
-                      <img 
-                        src={entry.photo} 
-                        alt={entry.title} 
-                        className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" 
-                      />
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
-        </main>
-      </div>
-    </div>
+                </div>
+              </article>
+            </Reveal>
+          ))}
+        </div>
+      </main>
+    </WeatherScope>
   )
 }

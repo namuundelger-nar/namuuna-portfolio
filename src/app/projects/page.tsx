@@ -1,56 +1,70 @@
 import { prisma } from "@/lib/prisma"
-import ProjectsClient from "./ProjectsClient"
+import { Navbar } from "@/components/layout/Navbar"
+import { Footer } from "@/components/layout/Footer"
+import { Reveal } from "@/components/Reveal"
+
+export const metadata = { title: "Projects — Namuundelger Narmandakh" }
 
 export default async function ProjectsPage() {
-  const dbProjects = await prisma.project.findMany({
-    orderBy: { order: "asc" },
-  })
+  const projects = await prisma.project.findMany({ orderBy: { order: "asc" } })
 
-  // Mock data representing the perfect "Project Archive" layout
-  const mockProjects = [
-    {
-      id: "1",
-      title: "Cloud Gallery",
-      description: "An experimental visual repository translating weather patterns into generative art. Using real-time barometric data to shape digital sculptures that mirror the fluidity of the stratosphere.",
-      imageUrl: "https://images.unsplash.com/photo-1542224566-6e85f2e6772f?auto=format&fit=crop&q=80&w=1200",
-      tags: ["UI/UX Design"],
-      icon: "cloud",
-      featured: true,
-      link: "#"
-    },
-    {
-      id: "2",
-      title: "Financial Ecosystem Analysis",
-      description: "Mapping market volatility through the metaphor of forest decay and rebirth. A comprehensive study on resilient economic structures.",
-      imageUrl: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=800",
-      tags: ["Financial Analysis"],
-      icon: "forest",
-      featured: false,
-      link: "#"
-    },
-    {
-      id: "3",
-      title: "Neural Horizon",
-      description: "Exploring the boundary where deep learning models begin to exhibit 'hallucinatory' creative behaviors, visualized through frost patterns.",
-      imageUrl: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=800",
-      tags: ["AI Engineer", "Data Analysis"],
-      icon: "ac_unit",
-      featured: false,
-      link: "#"
-    }
-  ]
+  return (
+    <>
+      <Navbar />
+      <main className="max-w-6xl mx-auto px-6 md:px-10 pt-16 pb-10">
+        <header className="mb-20">
+          <p className="eyebrow rise mb-6">Archive</p>
+          <h1 className="display text-5xl md:text-7xl rise" style={{ animationDelay: "0.1s" }}>
+            Projects<span className="text-glacier">.</span>
+          </h1>
+        </header>
 
-  // Use DB data if we have at least 3 projects, else use mock to show off the layout perfectly
-  const projects = dbProjects.length >= 3 ? dbProjects.map((p, i) => ({
-    id: p.id,
-    title: p.title,
-    description: p.description,
-    imageUrl: mockProjects[i % 3].imageUrl, // using placeholder images since DB images might not exist
-    tags: p.techStack.split(',').map(t => t.trim()),
-    icon: mockProjects[i % 3].icon,
-    featured: p.featured,
-    link: p.link || "#"
-  })) : mockProjects;
-
-  return <ProjectsClient projects={projects} />
+        {projects.length === 0 ? (
+          <p className="text-ink-soft">Projects will appear here once published from the dashboard.</p>
+        ) : (
+          <div>
+            {projects.map((p, i) => {
+              const href = p.link || p.github
+              return (
+                <Reveal key={p.id} delay={(i % 4) * 90}>
+                  <a
+                    href={href ?? undefined}
+                    target={href ? "_blank" : undefined}
+                    rel="noopener noreferrer"
+                    className={`group grid md:grid-cols-12 gap-4 items-baseline py-10 border-t border-line ${href ? "" : "pointer-events-none"}`}
+                  >
+                    <span className="display text-ink-soft/60 text-xl md:col-span-1">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <div className="md:col-span-5 flex items-baseline gap-4">
+                      <h2 className="display text-3xl md:text-4xl group-hover:text-glacier group-hover:translate-x-2 transition-all duration-300">
+                        {p.title}
+                      </h2>
+                      {p.featured && (
+                        <span className="font-mono text-[10px] uppercase tracking-widest text-teal border border-teal/40 rounded-full px-2.5 py-1">
+                          Featured
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-ink-soft leading-relaxed md:col-span-4">{p.description}</p>
+                    <div className="md:col-span-2 flex md:justify-end items-center gap-3">
+                      <span className="font-mono text-[10px] uppercase tracking-wider text-ink-soft hidden md:block">
+                        {p.techStack.split(",")[0]?.trim()}
+                      </span>
+                      {href && (
+                        <span className="w-9 h-9 rounded-full border border-line flex items-center justify-center group-hover:bg-glacier group-hover:text-white group-hover:border-glacier transition-colors">
+                          ↗
+                        </span>
+                      )}
+                    </div>
+                  </a>
+                </Reveal>
+              )
+            })}
+          </div>
+        )}
+      </main>
+      <Footer />
+    </>
+  )
 }

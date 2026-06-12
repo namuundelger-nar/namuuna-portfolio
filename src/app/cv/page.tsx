@@ -1,71 +1,161 @@
 import { prisma } from "@/lib/prisma"
 import { Navbar } from "@/components/layout/Navbar"
-import Image from "next/image"
-import CVTabsClient from "./CVTabsClient"
+import { Footer } from "@/components/layout/Footer"
+import { Reveal } from "@/components/Reveal"
+
+export const metadata = { title: "CV — Namuundelger Narmandakh" }
 
 export default async function CVPage() {
-  const profile = await prisma.profile.findFirst()
-  const experiences = await prisma.experience.findMany({ orderBy: { order: "asc" } })
-  const educations = await prisma.education.findMany({ orderBy: { order: "asc" } })
-  const skills = await prisma.skill.findMany({ orderBy: { order: "asc" } })
-  const projects = await prisma.project.findMany({ orderBy: { order: "asc" } })
-  const certifications = await prisma.certification.findMany({ orderBy: { order: "asc" } })
+  const [profile, experience, education, skills, certifications] = await Promise.all([
+    prisma.profile.findFirst(),
+    prisma.experience.findMany({ orderBy: { order: "asc" } }),
+    prisma.education.findMany({ orderBy: { order: "asc" } }),
+    prisma.skill.findMany({ orderBy: { order: "asc" } }),
+    prisma.certification.findMany({ orderBy: { order: "asc" } }),
+  ])
 
-  if (!profile) return <div>Please complete profile in admin.</div>
+  const skillGroups = skills.reduce<Record<string, string[]>>((acc, s) => {
+    ;(acc[s.category] ??= []).push(s.name)
+    return acc
+  }, {})
 
   return (
-    <div className="theme-cv font-body-md text-on-surface relative min-h-screen">
+    <>
       <Navbar />
-      
-      {/* Main Content Background */}
-      <div 
-        className="absolute inset-0 z-[-1] ghibli-bg opacity-30" 
-        style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBIndwGLSUnXxjG3wfqRf38AJqPBnheR-LPEfdHEdw7u8CsMJ094D6XgvG4A7LtGIOBbXRfyRq_SnOA-GFIY2S4V_P_g5PLcZ_5kIPrmqVBfuAo9jQcBWwJJmFbmVv6fhtJ1zbLUPxfi8gS0qauooZoY0jtCxNETo0v5e27WgCFvxhMexouVLxmBL2_Z2MUCOAM0BQcXDnmutTpz5XA44Qn7_KZHbP0EnR4aZVPccMUgHk-cHxL4p7luI5ik3neRSE122HVNAwwP1E')" }}
-      ></div>
+      <main className="max-w-6xl mx-auto px-6 md:px-10 pt-16 pb-10">
+        <div className="grid lg:grid-cols-12 gap-16">
 
-      <main className="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop py-12 relative z-10 pt-32">
-        
-        {/* Header Profile Section */}
-        <section className="glass-card rounded-[24px] p-8 md:p-12 mb-gutter flex flex-col md:flex-row items-center gap-8">
-          <div className="w-48 h-48 rounded-[24px] overflow-hidden shadow-[0_20px_40px_rgba(18,104,112,0.15)] flex-shrink-0 relative">
-            <Image 
-              alt={profile.name} 
-              className="object-cover" 
-              src={profile.imageUrl || "/profile-placeholder.png"}
-              fill
-              sizes="(max-width: 768px) 192px, 192px"
-            />
-          </div>
-          <div className="text-center md:text-left">
-            <h1 className="font-headline-xl text-headline-xl text-primary mb-2">{profile.name}</h1>
-            <p className="font-body-lg text-body-lg text-secondary mb-4">{profile.title}</p>
-            <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-              {skills.slice(0, 3).map(skill => (
-                <span key={skill.id} className="bg-secondary-container text-on-secondary-container px-4 py-1 rounded-full font-label-md text-label-md">
-                  {skill.name}
-                </span>
-              ))}
+          {/* Identity rail */}
+          <aside className="lg:col-span-4">
+            <div className="lg:sticky lg:top-24">
+              <Reveal>
+                <div className="arch overflow-hidden card-air p-2 max-w-[260px]">
+                  <img
+                    src={profile?.imageUrl || "/profile-2.jpg"}
+                    alt={profile?.name ?? "Portrait"}
+                    className="arch w-full aspect-[4/5] object-cover"
+                  />
+                </div>
+                <h1 className="display text-4xl mt-8 leading-tight">{profile?.name}</h1>
+                <p className="text-ink-soft mt-3 leading-relaxed">{profile?.title}</p>
+
+                <dl className="mt-8 space-y-2 font-mono text-xs text-ink-soft">
+                  {profile?.location && <dd>{profile.location}</dd>}
+                  {profile?.email && <dd>{profile.email}</dd>}
+                  {profile?.phone && <dd>{profile.phone}</dd>}
+                </dl>
+
+                {profile?.resumeUrl && (
+                  <a href={profile.resumeUrl} download className="inline-block mt-8 px-6 py-3 rounded-full bg-glacier text-white text-sm font-medium hover:-translate-y-0.5 transition-transform shadow-md">
+                    Download PDF
+                  </a>
+                )}
+              </Reveal>
             </div>
-          </div>
-        </section>
+          </aside>
 
-        {/* CV Tabs Client */}
-        <CVTabsClient experiences={experiences} educations={educations} skills={skills} projects={projects} certifications={certifications} />
-      </main>
+          {/* Content */}
+          <div className="lg:col-span-8 space-y-20">
 
-      {/* Footer */}
-      <footer className="w-full py-12 bg-surface-container-lowest border-t border-secondary-container relative z-10 mt-12">
-        <div className="flex flex-col md:flex-row justify-between items-center max-w-container-max mx-auto px-margin-desktop gap-gutter">
-          <div className="font-headline-lg text-headline-lg text-primary">{profile.name}</div>
-          <div className="flex gap-6">
-            {profile.linkedin && <a href={profile.linkedin} className="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md">LinkedIn</a>}
-            {profile.github && <a href={profile.github} className="text-on-surface-variant hover:text-primary transition-colors font-body-md text-body-md">GitHub</a>}
-          </div>
-          <div className="text-on-surface-variant font-body-md text-body-md opacity-80 hover:opacity-100 transition-opacity">
-            © {new Date().getFullYear()} {profile.name}. Crafted with Intention.
+            {experience.length > 0 && (
+              <section>
+                <Reveal><p className="eyebrow mb-10">Experience</p></Reveal>
+                <div>
+                  {experience.map((e, i) => (
+                    <Reveal key={e.id} delay={i * 80}>
+                      <article className="grid md:grid-cols-12 gap-4 py-8 border-t border-line group">
+                        <div className="md:col-span-3 font-mono text-xs text-ink-soft pt-1.5">
+                          {e.startDate} — {e.endDate ?? "now"}
+                          {e.location && <p className="mt-1.5">{e.location}</p>}
+                        </div>
+                        <div className="md:col-span-9">
+                          <h3 className="display text-2xl group-hover:text-glacier transition-colors">{e.role}</h3>
+                          <p className="text-glacier text-sm font-medium mt-1">{e.company}</p>
+                          <p className="text-ink-soft leading-relaxed mt-4">{e.description}</p>
+                          <div className="flex flex-wrap gap-2 mt-5">
+                            {e.techStack.split(",").map((t) => (
+                              <span key={t} className="font-mono text-[10px] uppercase tracking-wider border border-line rounded-full px-3 py-1">
+                                {t.trim()}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </article>
+                    </Reveal>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {education.length > 0 && (
+              <section>
+                <Reveal><p className="eyebrow mb-10">Education</p></Reveal>
+                {education.map((ed, i) => (
+                  <Reveal key={ed.id} delay={i * 80}>
+                    <article className="grid md:grid-cols-12 gap-4 py-8 border-t border-line">
+                      <div className="md:col-span-3 font-mono text-xs text-ink-soft pt-1.5">
+                        {ed.startDate} — {ed.endDate ?? "now"}
+                        {ed.location && <p className="mt-1.5">{ed.location}</p>}
+                      </div>
+                      <div className="md:col-span-9">
+                        <h3 className="display text-2xl">{ed.degree}</h3>
+                        <p className="text-glacier text-sm font-medium mt-1">{ed.institution}</p>
+                        {ed.description && <p className="text-ink-soft leading-relaxed mt-4">{ed.description}</p>}
+                      </div>
+                    </article>
+                  </Reveal>
+                ))}
+              </section>
+            )}
+
+            {Object.keys(skillGroups).length > 0 && (
+              <section>
+                <Reveal><p className="eyebrow mb-10">Skills</p></Reveal>
+                <div>
+                  {Object.entries(skillGroups).map(([cat, names], i) => (
+                    <Reveal key={cat} delay={i * 80}>
+                      <div className="py-6 border-t border-line">
+                        <h3 className="font-mono text-xs uppercase tracking-[0.18em] text-ink-soft mb-4">
+                          {cat.replace(/^Technical - /, "")}
+                        </h3>
+                        <p className="display text-xl md:text-2xl leading-relaxed">
+                          {names.join(" · ")}
+                        </p>
+                      </div>
+                    </Reveal>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {certifications.length > 0 && (
+              <section>
+                <Reveal><p className="eyebrow mb-10">Certifications</p></Reveal>
+                {certifications.map((c, i) => (
+                  <Reveal key={c.id} delay={i * 80}>
+                    <article className="flex flex-wrap items-baseline justify-between gap-3 py-6 border-t border-line">
+                      <div>
+                        <h3 className="text-lg font-medium">
+                          {c.link ? (
+                            <a href={c.link} target="_blank" rel="noopener noreferrer" className="link-line pb-0.5">
+                              {c.name}
+                            </a>
+                          ) : (
+                            c.name
+                          )}
+                        </h3>
+                        <p className="text-sm text-ink-soft mt-1">{c.issuer}</p>
+                      </div>
+                      {c.date && <span className="font-mono text-xs text-ink-soft">{c.date}</span>}
+                    </article>
+                  </Reveal>
+                ))}
+              </section>
+            )}
           </div>
         </div>
-      </footer>
-    </div>
+      </main>
+      <Footer />
+    </>
   )
 }

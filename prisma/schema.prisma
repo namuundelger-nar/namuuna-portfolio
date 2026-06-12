@@ -91,6 +91,33 @@ model BlogPost {
   updatedAt DateTime @updatedAt
 }
 
+// Free-form inline-editable text, addressed by a stable key (e.g. "home.quote").
+model ContentBlock {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+  revisions ContentRevision[]
+}
+
+// Append-only history of every published edit, for audit/rollback.
+model ContentRevision {
+  id        String   @id @default(cuid())
+  blockKey  String
+  value     String
+  createdAt DateTime @default(now())
+  block     ContentBlock @relation(fields: [blockKey], references: [key])
+}
+
+model MediaAsset {
+  id        String   @id @default(cuid())
+  filename  String
+  url       String
+  alt       String?
+  mimeType  String
+  createdAt DateTime @default(now())
+}
+
 model DesignConfig {
   id              String   @id @default(cuid())
   primaryColor    String   @default("#fafafa")
