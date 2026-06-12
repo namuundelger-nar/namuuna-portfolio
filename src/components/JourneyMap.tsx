@@ -12,15 +12,17 @@ export function JourneyMap() {
     <Reveal>
       <div className="relative">
         {/* Connecting path */}
+        {/* Path is pinned to the dots' centerline (y≈8px) with a gentle ±4px
+            wave so it never dips into the city names below. */}
         <svg
-          className="absolute left-0 right-0 top-7 w-full h-10 hidden md:block"
-          viewBox="0 0 1000 40"
+          className="absolute left-0 right-0 top-0 w-full h-4 hidden md:block pointer-events-none"
+          viewBox="0 0 1000 16"
           preserveAspectRatio="none"
           aria-hidden
         >
           <path
             className="journey-line"
-            d="M 60 20 C 250 -10, 400 50, 500 20 S 800 -8, 940 20"
+            d="M 60 8 C 250 4, 350 12, 500 8 S 750 4, 940 8"
             fill="none"
             stroke="var(--glacier)"
             strokeWidth="1.5"

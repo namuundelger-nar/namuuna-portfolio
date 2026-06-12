@@ -19,13 +19,13 @@ const hobbiesData: Record<string, {
         date: "May 20, 2026",
         title: "Advanced Sparring Seminar",
         text: "Attended a 3-day intensive seminar focusing on technical sparring and movement fluidity. It was exhausting but incredibly rewarding to train with advanced practitioners and refine my defensive techniques.",
-        photo: "https://images.unsplash.com/photo-1545620958-868bf03058c4?q=80&w=800&auto=format&fit=crop"
+        photo: "https://images.unsplash.com/photo-1549719386-74dfcbf7dbed?q=80&w=800&auto=format&fit=crop"
       },
       {
         date: "March 15, 2026",
         title: "Mastering the Basics",
         text: "Today marked a milestone in my training where the foundational forms finally clicked into muscle memory. The repetitive drills are paying off in my overall speed and balance.",
-        photo: "https://images.unsplash.com/photo-1526508915835-4fc1786fb26f?q=80&w=800&auto=format&fit=crop"
+        photo: "https://images.unsplash.com/photo-1593810450967-f9c42742e326?q=80&w=800&auto=format&fit=crop"
       }
     ]
   },

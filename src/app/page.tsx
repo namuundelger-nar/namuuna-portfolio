@@ -22,9 +22,9 @@ export default async function Home() {
   const skillRowB = skills.filter((_, i) => i % 2 === 1)
 
   const hobbies = [
-    { name: "Martial Arts", slug: "martial-arts", note: "Discipline, focus, endurance" },
-    { name: "Hiking & Nature", slug: "hiking", note: "Trails, peaks, steppe air" },
-    { name: "Reading", slug: "reading", note: "Geopolitics, economics, sci-fi" },
+    { name: "Martial Arts", slug: "martial-arts", note: "Discipline, focus, endurance", image: "https://images.unsplash.com/photo-1555597673-b21d5c935865?q=80&w=800&auto=format&fit=crop" },
+    { name: "Hiking & Nature", slug: "hiking", note: "Trails, peaks, steppe air", image: "https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=800&auto=format&fit=crop" },
+    { name: "Reading", slug: "reading", note: "Geopolitics, economics, sci-fi", image: "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=800&auto=format&fit=crop" },
   ]
 
   return (
@@ -85,7 +85,7 @@ export default async function Home() {
         <section className="py-20 border-t border-line">
           <Reveal>
             <p className="eyebrow mb-8">01 — About</p>
-            <p className="display text-2xl md:text-4xl leading-snug max-w-4xl">
+            <p className="display read-sweep text-2xl md:text-4xl leading-snug max-w-4xl">
               {profile.bio}
             </p>
           </Reveal>
@@ -177,9 +177,16 @@ export default async function Home() {
           <div className="grid md:grid-cols-3 gap-6">
             {hobbies.map((h, i) => (
               <Reveal key={h.slug} delay={i * 120}>
-                <Link href={`/hobbies/${h.slug}`} className="card-air arch block p-8 pt-14 text-center group">
+                <Link href={`/hobbies/${h.slug}`} className="card-air arch block p-2.5 pb-8 text-center group overflow-hidden">
+                  <div className="arch overflow-hidden mb-6">
+                    <img
+                      src={h.image}
+                      alt={h.name}
+                      className="arch w-full aspect-[4/3] object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                  </div>
                   <h3 className="display text-2xl mb-2 group-hover:text-glacier transition-colors">{h.name}</h3>
-                  <p className="text-sm text-ink-soft mb-6">{h.note}</p>
+                  <p className="text-sm text-ink-soft mb-5">{h.note}</p>
                   <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-glacier">
                     Open diary →
                   </span>

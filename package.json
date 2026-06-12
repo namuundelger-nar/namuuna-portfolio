@@ -9,9 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@fontsource-variable/albert-sans": "^5.2.8",
+    "@fontsource-variable/fraunces": "^5.2.9",
+    "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "@prisma/client": "^6.19.3",
     "clsx": "^2.1.1",
     "lucide-react": "^1.17.0",
+    "material-symbols": "^0.45.1",
     "next": "16.2.7",
     "next-themes": "^0.4.6",
     "prisma": "^6.19.3",

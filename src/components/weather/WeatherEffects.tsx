@@ -75,10 +75,14 @@ export function WeatherEffects({ weather, fixed = false }: { weather: WeatherId;
 
       {weather === "rain" && (
         <>
+          {/* Neon signage glow — Tokyo at night */}
+          <div className="wx-neon wx-neon-pink absolute bottom-[-8%] left-[8%] w-[26rem] h-[20rem]" />
+          <div className="wx-neon wx-neon-cyan absolute bottom-[-12%] right-[12%] w-[30rem] h-[22rem]" />
+          <div className="wx-neon wx-neon-violet absolute top-[18%] right-[-6%] w-[24rem] h-[24rem]" />
           {parts.map((p) => (
             <span
               key={p.id}
-              className="wx-streak absolute top-[-12%]"
+              className={`wx-streak absolute top-[-12%] ${p.id % 3 === 0 ? "wx-streak-pink" : ""}`}
               style={{
                 left: `${p.left}%`,
                 height: 30 + p.size * 8,
@@ -86,15 +90,18 @@ export function WeatherEffects({ weather, fixed = false }: { weather: WeatherId;
               }}
             />
           ))}
+          <div className="wx-city-glow absolute bottom-0 left-0 right-0 h-[45vh]" />
           <div className="wx-mist absolute bottom-0 left-0 right-0 h-[35vh]" />
         </>
       )}
 
       {weather === "ocean" && (
         <>
-          <div className="wx-wave absolute bottom-[-12%] left-[-12%] right-[-12%] h-[34vh] rounded-[100%]" />
-          <div className="wx-wave wx-wave-2 absolute bottom-[-20%] left-[-20%] right-[-20%] h-[42vh] rounded-[100%]" />
-          <div className="wx-shimmer absolute inset-x-0 top-0 h-[55vh]" />
+          {/* Real water photo on the horizon, foam and light on top */}
+          <div className="wx-ocean-photo absolute bottom-0 left-0 right-0 h-[52vh]" />
+          <div className="wx-wave absolute bottom-[-12%] left-[-12%] right-[-12%] h-[30vh] rounded-[100%]" />
+          <div className="wx-wave wx-wave-2 absolute bottom-[-20%] left-[-20%] right-[-20%] h-[38vh] rounded-[100%]" />
+          <div className="wx-shimmer absolute inset-x-0 top-0 h-[45vh]" />
         </>
       )}
     </div>
