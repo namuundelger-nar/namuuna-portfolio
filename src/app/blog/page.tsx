@@ -1,26 +1,73 @@
-import { prisma } from "@/lib/prisma"
 import Link from "next/link"
-import BlogInteractiveClient from "./BlogInteractiveClient"
+import { prisma } from "@/lib/prisma"
+import { Navbar } from "@/components/layout/Navbar"
+import { Footer } from "@/components/layout/Footer"
+import { Reveal } from "@/components/Reveal"
+
+export const metadata = { title: "Journal — Namuundelger Narmandakh" }
+
+const dateFmt = new Intl.DateTimeFormat("en", { month: "long", day: "numeric", year: "numeric" })
 
 export default async function BlogIndex() {
   const posts = await prisma.blogPost.findMany({
     where: { published: true },
-    orderBy: { createdAt: 'desc' }
+    orderBy: { createdAt: "desc" },
   })
+  const [featured, ...rest] = posts
 
-  // To simulate the beautiful staggered grid from the design even if there are few posts,
-  // we'll assign different aesthetic card styles to them based on their index.
-  const getCardStyle = (index: number) => {
-    const styles = [
-      // 1: Ocean (Vertical)
-      { wrapper: "aspect-[3/4]", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuD__jMh6LPEZ9ec5EkCvfw3mZB8ScB8Xk-MAjQUqzqbDPmJUoN6H3PvybmIVYgMQvUyan8eXX0AeviTNceN5lRGA7ALh4PfdhSz4fxVZrZQvw-R18fz3D5ym7iSpEHRHmO7bQAdpCOzkDWkhg3ongliNMtgy0tZ0Rz9UCtv84PIWLzlxa27ljhfahu3t3Dhgu88zZs-akVAfAsqLivF__NFsgo2rZnoOYIsaQK9gVWTjb1DLz55tniy_F4clFtsdkvQvAjAR0NyXTA", label: "Ocean", icon: "water" },
-      // 2: Cloud (Square-ish, text first)
-      { wrapper: "aspect-video", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuC04dQ4IPZgEqvSw9a_8f6aBWD0H5TXqDYacLPP9qTdsCRMttgE0a5vAvb9M8DFpkhn0c51zza2l16Hq4yq5TWZGsih1rB86Vf3drMzIJ28L1Z_1nJMnW_4pzuiUvKsasRawNNJaeRxMPGK2s2qdUikS4IHs76B0XqObLHYU2Mk3SobBXEKTuTzvgBBq93LJWF2tprmVIGbvY_Zt9WBD6cs9uCr1_AgxzqQ_7LHakwHNWFOCFjO5inM5Or2aqzbXRVCd54hYBBKs_o", label: "Cloudscapes", icon: "cloudy", isTextFirst: true },
-      // 3: Waterfall (Tall)
-      { wrapper: "aspect-[4/5]", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuC1LFFXakPKD8aA4w18XbcqnK6kBfO-dgO_jwKmwwWTT4vsBJESMtClOQJ7-7kRXDYryZOBbCC3gmJaRhIywrBz8rj1oTnWI3OQEhoTFPo_l1Nqc0WCZs11-uINnWQfaai-jh1bfpUBpR1N-8wyiozmQKfbQxrtTLNxhzgME1UhJ9FPzj2CjucvbghWCnHBGc0Z-KbznzD_DQC8d7tXLzfjyVuEko6mZj2ucTXou2Fw_hxq8EEk94XdpZ88ETuJFtLyxuMCqGrHUpM", label: "Gravity & Grace", icon: "nature", overlay: true }
-    ]
-    return styles[index % styles.length]
-  }
+  return (
+    <>
+      <Navbar />
+      <main className="max-w-6xl mx-auto px-6 md:px-10 pt-16 pb-10">
+        <header className="mb-20">
+          <p className="eyebrow rise mb-6">Notes on data, places & weather</p>
+          <h1 className="display text-5xl md:text-7xl rise" style={{ animationDelay: "0.1s" }}>
+            Journal<span className="text-glacier">.</span>
+          </h1>
+        </header>
 
-  return <BlogInteractiveClient posts={posts} />
+        {!featured ? (
+          <p className="text-ink-soft">First entry coming soon.</p>
+        ) : (
+          <>
+            <Reveal>
+              <Link href={`/blog/${featured.slug}`} className="card-air rounded-[2.5rem] p-10 md:p-16 block group mb-16">
+                <p className="font-mono text-xs text-ink-soft mb-6">
+                  Latest — {dateFmt.format(featured.createdAt)}
+                </p>
+                <h2 className="display text-3xl md:text-5xl leading-tight max-w-3xl group-hover:text-glacier transition-colors">
+                  {featured.title}
+                </h2>
+                <p className="text-ink-soft leading-relaxed max-w-2xl mt-6 line-clamp-3">
+                  {featured.content.slice(0, 280)}
+                </p>
+                <span className="inline-block mt-8 font-mono text-[10px] uppercase tracking-[0.2em] text-glacier">
+                  Read entry →
+                </span>
+              </Link>
+            </Reveal>
+
+            <div>
+              {rest.map((post, i) => (
+                <Reveal key={post.id} delay={(i % 4) * 90}>
+                  <Link href={`/blog/${post.slug}`} className="group grid md:grid-cols-12 gap-3 items-baseline py-8 border-t border-line">
+                    <span className="font-mono text-xs text-ink-soft md:col-span-3">
+                      {dateFmt.format(post.createdAt)}
+                    </span>
+                    <h3 className="display text-2xl md:text-3xl md:col-span-6 group-hover:text-glacier transition-colors">
+                      {post.title}
+                    </h3>
+                    <span className="md:col-span-3 md:text-right font-mono text-[10px] uppercase tracking-[0.2em] text-ink-soft group-hover:text-glacier transition-colors">
+                      Read →
+                    </span>
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
+          </>
+        )}
+      </main>
+      <Footer />
+    </>
+  )
 }
