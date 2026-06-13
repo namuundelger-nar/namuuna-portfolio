@@ -36,8 +36,17 @@ const presets = [
   },
 ]
 
-export default async function AdminDesignPage() {
-  const config = await prisma.designConfig.findFirst()
+import Link from "next/link"
+
+export default async function AdminDesignPage({ searchParams }: { searchParams: Promise<{ season?: string }> }) {
+  const params = await searchParams
+  const seasonParam = params.season || "global"
+  const season = seasonParam === "global" ? null : seasonParam
+
+  const config = await prisma.designConfig.findFirst({
+    where: { season }
+  })
+  
   const current = {
     primaryColor: config?.primaryColor ?? "#21638d",
     backgroundColor: config?.backgroundColor ?? "#f7fafc",
@@ -45,13 +54,36 @@ export default async function AdminDesignPage() {
     borderRadius: config?.borderRadius ?? "1rem",
   }
 
+  const tabs = [
+    { id: "global", label: "Global Theme" },
+    { id: "spring", label: "Spring" },
+    { id: "summer", label: "Summer" },
+    { id: "autumn", label: "Autumn" },
+    { id: "winter", label: "Winter" },
+  ]
+
   return (
     <div className="max-w-4xl">
       <p className="eyebrow mb-3">Design sandbox</p>
-      <h1 className="display text-4xl mb-4 text-foreground">Theme presets</h1>
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+        <h1 className="display text-4xl text-foreground">Theme presets</h1>
+        
+        <div className="flex bg-accent/20 p-1 rounded-lg w-max">
+          {tabs.map(tab => (
+            <Link 
+              key={tab.id} 
+              href={`/admin/design${tab.id === 'global' ? '' : `?season=${tab.id}`}`}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${seasonParam === tab.id ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              {tab.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+      
       <p className="text-muted-foreground mb-10 max-w-2xl">
-        Presets restyle the site&apos;s base (Clear) theme — accent, paper, and ink.
-        Weather moods like Rain and Ocean keep their own atmospheres on top.
+        Presets restyle the site&apos;s base theme — accent, paper, and ink.
+        You are currently editing the <strong>{tabs.find(t => t.id === seasonParam)?.label}</strong> configuration.
       </p>
 
       {/* Preset gallery */}
@@ -62,6 +94,7 @@ export default async function AdminDesignPage() {
             p.backgroundColor === current.backgroundColor
           return (
             <form key={p.name} action={updateDesignConfig}>
+              <input type="hidden" name="season" value={seasonParam} />
               <input type="hidden" name="primaryColor" value={p.primaryColor} />
               <input type="hidden" name="backgroundColor" value={p.backgroundColor} />
               <input type="hidden" name="textColor" value={p.textColor} />
@@ -107,9 +140,10 @@ export default async function AdminDesignPage() {
       </div>
 
       {/* Fine-tuning */}
-      <h2 className="display text-2xl mb-2 text-foreground">Fine-tune</h2>
+      <h2 className="display text-2xl mb-2 text-foreground">Fine-tune {tabs.find(t => t.id === seasonParam)?.label}</h2>
       <p className="text-muted-foreground text-sm mb-6">Or mix your own from any starting point.</p>
       <form action={updateDesignConfig} className="rounded-3xl border border-border p-6 bg-accent/10 space-y-6">
+        <input type="hidden" name="season" value={seasonParam} />
         <div className="grid gap-6 sm:grid-cols-3">
           {([
             ["primaryColor", "Accent", current.primaryColor],

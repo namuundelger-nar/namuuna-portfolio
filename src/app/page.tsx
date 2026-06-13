@@ -5,6 +5,7 @@ import { Footer } from "@/components/layout/Footer"
 import { JourneyMap } from "@/components/JourneyMap"
 import { Reveal } from "@/components/Reveal"
 import { Editable } from "@/components/cms/Editable"
+import { SeasonBadge } from "@/components/weather/SeasonBadge"
 
 export default async function Home() {
   const [profile, projects, skills] = await Promise.all([
@@ -41,9 +42,12 @@ export default async function Home() {
 
           <div className="grid md:grid-cols-12 gap-12 items-end">
             <div className="md:col-span-7">
-              <p className="eyebrow rise mb-8" style={{ animationDelay: "0.05s" }}>
-                {profile.location} · open to opportunities
-              </p>
+              <div className="flex flex-wrap items-center gap-4 rise mb-8" style={{ animationDelay: "0.05s" }}>
+                <p className="eyebrow">
+                  {profile.location} · open to opportunities
+                </p>
+                <SeasonBadge />
+              </div>
               <h1 className="display text-6xl md:text-8xl leading-[0.95] rise" style={{ animationDelay: "0.15s" }}>
                 {firstName}
                 <br />
@@ -53,7 +57,7 @@ export default async function Home() {
                 {profile.title}
               </p>
               <div className="mt-10 flex flex-wrap gap-4 rise" style={{ animationDelay: "0.45s" }}>
-                <Link href="/cv" className="px-7 py-3.5 rounded-full bg-glacier text-white text-sm font-medium hover:-translate-y-0.5 transition-transform shadow-lg shadow-glacier/25">
+                <Link href="/cv" className="cta-primary px-7 py-3.5 rounded-full text-sm font-medium">
                   Read my CV
                 </Link>
                 {profile.resumeUrl && (
@@ -66,7 +70,7 @@ export default async function Home() {
 
             <div className="md:col-span-5 rise" style={{ animationDelay: "0.35s" }}>
               <div className="relative max-w-sm ml-auto">
-                <div className="arch overflow-hidden card-air p-2.5">
+                <div className="arch overflow-hidden card-air profile-ring p-2.5">
                   <img
                     src={profile.imageUrl || "/profile-1.jpg"}
                     alt={profile.name}
@@ -82,26 +86,33 @@ export default async function Home() {
         </section>
 
         {/* ---- Bio ---- */}
-        <section className="py-20 border-t border-line">
+        <section className="py-20 glow-divider">
           <Reveal>
-            <p className="eyebrow mb-8">01 — About</p>
-            <p className="display read-sweep text-2xl md:text-4xl leading-snug max-w-4xl">
-              {profile.bio}
+            <p className="eyebrow mb-8"><span className="section-num">01</span> — About</p>
+            <p className="display text-2xl md:text-4xl leading-snug max-w-4xl">
+              {profile.bio.split(" ").map((word, i) => (
+                <span key={i}>
+                  <span className="animate-wave-word" style={{ animationDelay: `${0.2 + (0.05 * i)}s` }}>
+                    {word}
+                  </span>
+                  {" "}
+                </span>
+              ))}
             </p>
           </Reveal>
         </section>
 
         {/* ---- Journey ---- */}
-        <section className="py-20 border-t border-line">
-          <p className="eyebrow mb-14">02 — The journey</p>
+        <section className="py-20 glow-divider">
+          <p className="eyebrow mb-14"><span className="section-num">02</span> — The journey</p>
           <JourneyMap />
         </section>
 
         {/* ---- Skills marquee ---- */}
         {skills.length > 0 && (
-          <section className="py-20 border-t border-line overflow-hidden">
+          <section className="py-20 glow-divider overflow-hidden">
             <Reveal>
-              <p className="eyebrow mb-12">03 — Toolkit</p>
+              <p className="eyebrow mb-12"><span className="section-num">03</span> — Toolkit</p>
             </Reveal>
             <div className="space-y-4 -mx-6 md:-mx-10">
               {[skillRowA, skillRowB].map((row, r) =>
@@ -124,9 +135,9 @@ export default async function Home() {
 
         {/* ---- Selected work ---- */}
         {projects.length > 0 && (
-          <section className="py-20 border-t border-line">
+          <section className="py-20 glow-divider">
             <Reveal className="flex items-baseline justify-between mb-14">
-              <p className="eyebrow">04 — Selected work</p>
+              <p className="eyebrow"><span className="section-num">04</span> — Selected work</p>
               <Link href="/projects" className="link-line pb-0.5 text-sm font-medium">All projects</Link>
             </Reveal>
             <div className="space-y-5">
@@ -138,7 +149,7 @@ export default async function Home() {
                     rel="noopener noreferrer"
                     className="card-air rounded-3xl p-8 md:p-10 grid md:grid-cols-12 gap-6 items-baseline group block"
                   >
-                    <span className="font-mono text-sm text-ink-soft md:col-span-1">0{i + 1}</span>
+                    <span className="font-mono text-sm md:col-span-1 section-num">0{i + 1}</span>
                     <h3 className="display text-2xl md:text-3xl md:col-span-4 group-hover:text-glacier transition-colors">
                       {p.title}
                     </h3>
@@ -158,7 +169,7 @@ export default async function Home() {
         )}
 
         {/* ---- Quote (inline-editable by the author) ---- */}
-        <section className="py-24 border-t border-line text-center">
+        <section className="py-24 glow-divider text-center quote-section">
           <Reveal>
             <Editable
               blockKey="home.quote"
@@ -170,9 +181,9 @@ export default async function Home() {
         </section>
 
         {/* ---- Hobbies ---- */}
-        <section className="py-20 border-t border-line">
+        <section className="py-20 glow-divider">
           <Reveal>
-            <p className="eyebrow mb-14">05 — Off the clock</p>
+            <p className="eyebrow mb-14"><span className="section-num">05</span> — Off the clock</p>
           </Reveal>
           <div className="grid md:grid-cols-3 gap-6">
             {hobbies.map((h, i) => (

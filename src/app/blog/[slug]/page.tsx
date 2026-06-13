@@ -31,11 +31,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           </h1>
         </header>
 
-        {post.coverImage && (
-          <div className="card-air arch overflow-hidden p-2 mb-14 rise" style={{ animationDelay: "0.2s" }}>
-            <img src={post.coverImage} alt="" className="arch w-full h-[280px] md:h-[400px] object-cover" />
-          </div>
-        )}
+        <div className="card-air arch overflow-hidden p-2 mb-14 rise" style={{ animationDelay: "0.2s" }}>
+          <img src={post.coverImage || "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=1200&auto=format&fit=crop"} alt="" className="arch w-full h-[280px] md:h-[400px] object-cover" />
+        </div>
 
         <article className="rise space-y-6 text-lg leading-relaxed text-ink/90" style={{ animationDelay: "0.25s" }}>
           {post.content.split(/\n{2,}/).map((para, i) => (

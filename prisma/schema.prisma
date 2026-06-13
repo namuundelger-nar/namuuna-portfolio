@@ -121,6 +121,7 @@ model MediaAsset {
 
 model DesignConfig {
   id              String   @id @default(cuid())
+  season          String?  @unique
   primaryColor    String   @default("#fafafa")
   backgroundColor String   @default("#09090b")
   textColor       String   @default("#fafafa")

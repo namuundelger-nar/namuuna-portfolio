@@ -33,8 +33,10 @@ export function JourneyMap() {
         <ol className="grid md:grid-cols-3 gap-10 md:gap-8 relative">
           {stops.map((s, i) => (
             <li key={s.city} className="journey-node" style={{ animationDelay: `${0.4 + i * 0.45}s` }}>
-              <div className="flex items-center gap-3 mb-4">
-                <span className={`relative w-3.5 h-3.5 rounded-full bg-glacier ${i === stops.length - 1 ? "pulse-dot" : ""}`} />
+              <div className="flex flex-col gap-3 mb-4">
+                <div className="h-4 flex items-center">
+                  <span className={`relative w-3.5 h-3.5 rounded-full bg-glacier ${i === stops.length - 1 ? "pulse-dot" : ""}`} />
+                </div>
                 <span className="font-mono text-xs text-ink-soft tracking-widest uppercase">{s.years}</span>
               </div>
               <h3 className="display text-2xl md:text-3xl mb-1">

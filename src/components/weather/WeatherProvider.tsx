@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useEffect, useState } from "react"
-import { GLOBAL_WEATHERS, type Weather, type WeatherId } from "@/lib/weather"
+import { GLOBAL_WEATHERS, getSeasonForDate, type Weather, type WeatherId } from "@/lib/weather"
 import { WeatherEffects } from "./WeatherEffects"
 
 type Ctx = { weather: Weather; setWeather: (id: WeatherId) => void; choices: Weather[] }
@@ -16,7 +16,8 @@ export function useWeather() {
 }
 
 export function WeatherProvider({ children }: { children: React.ReactNode }) {
-  const [id, setId] = useState<WeatherId>("clear")
+  // Default to auto-detected season so the first paint already matches
+  const [id, setId] = useState<WeatherId>(() => getSeasonForDate(new Date()))
 
   useEffect(() => {
     // localStorage is client-only; reading it before mount would break hydration.
@@ -34,7 +35,7 @@ export function WeatherProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <WeatherContext.Provider value={{ weather, setWeather: setId, choices: GLOBAL_WEATHERS }}>
-      <WeatherEffects weather={weather.id} fixed />
+      <WeatherEffects weather={weather.id} />
       {children}
     </WeatherContext.Provider>
   )

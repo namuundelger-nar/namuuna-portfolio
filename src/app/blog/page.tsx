@@ -32,15 +32,13 @@ export default async function BlogIndex() {
           <>
             <Reveal>
               <Link href={`/blog/${featured.slug}`} className="card-air rounded-[2.5rem] overflow-hidden block group mb-16 grid md:grid-cols-2">
-                {featured.coverImage && (
-                  <div className="overflow-hidden">
-                    <img
-                      src={featured.coverImage}
-                      alt=""
-                      className="w-full h-full min-h-[260px] object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
-                  </div>
-                )}
+                <div className="overflow-hidden">
+                  <img
+                    src={featured.coverImage || "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=800&auto=format&fit=crop"}
+                    alt=""
+                    className="w-full h-full min-h-[260px] object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                </div>
                 <div className="p-10 md:p-14">
                   <p className="font-mono text-xs text-ink-soft mb-6">
                     Latest — {dateFmt.format(featured.createdAt)}
@@ -62,16 +60,14 @@ export default async function BlogIndex() {
               {rest.map((post, i) => (
                 <Reveal key={post.id} delay={(i % 4) * 90}>
                   <Link href={`/blog/${post.slug}`} className="group grid md:grid-cols-12 gap-4 items-center py-6 border-t border-line">
-                    {post.coverImage && (
-                      <div className="md:col-span-2 overflow-hidden rounded-2xl">
-                        <img
-                          src={post.coverImage}
-                          alt=""
-                          className="w-full aspect-[16/10] object-cover group-hover:scale-105 transition-transform duration-700"
-                        />
-                      </div>
-                    )}
-                    <span className={`font-mono text-xs text-ink-soft ${post.coverImage ? "md:col-span-2" : "md:col-span-4"}`}>
+                    <div className="md:col-span-2 overflow-hidden rounded-2xl">
+                      <img
+                        src={post.coverImage || "https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=400&auto=format&fit=crop"}
+                        alt=""
+                        className="w-full aspect-[16/10] object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                    </div>
+                    <span className={`font-mono text-xs text-ink-soft md:col-span-2`}>
                       {dateFmt.format(post.createdAt)}
                     </span>
                     <h3 className="display text-2xl md:text-3xl md:col-span-6 group-hover:text-glacier transition-colors">

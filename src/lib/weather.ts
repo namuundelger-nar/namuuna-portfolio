@@ -1,4 +1,4 @@
-export type WeatherId = "clear" | "snow" | "rain" | "windsnow" | "ocean"
+export type WeatherId = "clear" | "summer" | "snow" | "rain" | "windsnow" | "autumn"
 
 export type Weather = {
   id: WeatherId
@@ -7,18 +7,32 @@ export type Weather = {
   ink: "dark" | "light"
 }
 
+/**
+ * Map the current date to the season of the year.
+ * Spring (Mar–May) → rain, Summer (Jun–Aug) → summer,
+ * Autumn (Sep–Nov) → autumn, Winter (Dec–Feb) → snow
+ */
+export function getSeasonForDate(date: Date): WeatherId {
+  const month = date.getMonth() // 0-indexed
+  if (month >= 2 && month <= 4) return "rain"     // Spring: March–May
+  if (month >= 5 && month <= 7) return "summer"   // Summer: June–August
+  if (month >= 8 && month <= 10) return "autumn"  // Autumn: September–November
+  return "snow"                                    // Winter: December–February
+}
+
 /** Site-wide weather modes, switchable from the floating dock. */
 export const GLOBAL_WEATHERS: Weather[] = [
   { id: "clear", label: "Clear", ink: "dark" },
+  { id: "summer", label: "Summer", ink: "dark" },
+  { id: "rain", label: "Rain", ink: "dark" },
+  { id: "autumn", label: "Autumn", ink: "dark" },
   { id: "snow", label: "Snow", ink: "dark" },
-  { id: "rain", label: "Rain", ink: "light" },
-  { id: "ocean", label: "Ocean", ink: "dark" },
 ]
 
 /** Hobby section "4 Seasons Nature" — local override of the global weather. */
 export const SEASON_WEATHERS: Weather[] = [
-  { id: "snow", label: "Snow", ink: "dark" },
-  { id: "rain", label: "Rain", ink: "light" },
-  { id: "windsnow", label: "Wind & Snow", ink: "dark" },
-  { id: "ocean", label: "Ocean", ink: "dark" },
+  { id: "rain", label: "Spring", ink: "dark" },
+  { id: "summer", label: "Summer", ink: "dark" },
+  { id: "autumn", label: "Autumn", ink: "dark" },
+  { id: "snow", label: "Winter", ink: "dark" },
 ]

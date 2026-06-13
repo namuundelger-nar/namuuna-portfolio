@@ -78,7 +78,7 @@ export default async function HobbyPage({ params }: { params: Promise<{ slug: st
   return (
     // Local weather override: the Hobby section runs its own "4 Seasons
     // Nature" sky, independent of the global dock.
-    <WeatherScope choices={SEASON_WEATHERS} defaultId="snow">
+    <WeatherScope choices={SEASON_WEATHERS} defaultId="summer">
       <Navbar />
       <main className="max-w-4xl mx-auto px-6 md:px-10 pt-16 pb-32">
         <div className="flex flex-wrap items-center justify-between gap-6 mb-16">

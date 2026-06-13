@@ -18,6 +18,16 @@ function WeatherIcon({ id }: { id: WeatherId }) {
           <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
         </svg>
       )
+    case "summer":
+      return (
+        <svg viewBox="0 0 24 24" className="wx-icon" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+          {/* Sun body */}
+          <circle cx="12" cy="10" r="4.5" fill="currentColor" stroke="none" className="wx-icon-rays" />
+          {/* Heat waves below sun */}
+          <path className="wx-icon-gust" d="M5 17c2-1.5 4-1.5 6 0s4 1.5 6 0" style={{ animationDelay: "0s" }} />
+          <path className="wx-icon-gust" d="M5 20.5c2-1.5 4-1.5 6 0s4 1.5 6 0" style={{ animationDelay: "0.4s" }} />
+        </svg>
+      )
     case "snow":
       return (
         <svg viewBox="0 0 24 24" className="wx-icon wx-icon-bob" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
@@ -46,13 +56,13 @@ function WeatherIcon({ id }: { id: WeatherId }) {
           <circle className="wx-icon-bob" cx="6" cy="18.5" r="1.4" fill="currentColor" stroke="none" />
         </svg>
       )
-    case "ocean":
+    case "autumn":
       return (
-        <svg viewBox="0 0 24 24" className="wx-icon" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-          <g className="wx-icon-swell">
-            <path d="M-6 9 q3 -3 6 0 t6 0 t6 0 t6 0 t6 0" />
-            <path d="M-6 15 q3 -3 6 0 t6 0 t6 0 t6 0 t6 0" opacity="0.55" />
-          </g>
+        <svg viewBox="0 0 24 24" className="wx-icon wx-icon-bob" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2C8 2 4 6 4 11c0 3 2 6 4 8 1 2 4 3 4 3s3-1 4-3c2-2 4-5 4-8 0-5-4-9-8-9z" />
+          <path d="M12 22v-8" />
+          <path d="M12 18l-3-2" />
+          <path d="M12 14l3-2" />
         </svg>
       )
   }

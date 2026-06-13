@@ -1,18 +1,29 @@
+import { prisma } from "@/lib/prisma"
 import { Button } from "@/components/ui/Button"
-import { createBlogPost } from "@/app/actions/blog"
+import { updateBlogPost } from "@/app/actions/blog"
 import Link from "next/link"
+import { notFound } from "next/navigation"
 
-export default function NewBlogPage() {
+export default async function EditBlogPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
+  const post = await prisma.blogPost.findUnique({ where: { id } })
+
+  if (!post) {
+    notFound()
+  }
+
   return (
     <div className="max-w-2xl">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-foreground">Create New Blog Post</h1>
+        <h1 className="text-3xl font-bold text-foreground">Edit Blog Post</h1>
         <Link href="/admin/blogs">
           <Button variant="outline">Cancel</Button>
         </Link>
       </div>
 
-      <form action={createBlogPost} className="space-y-6 rounded-xl border border-border p-6 bg-accent/10">
+      <form action={updateBlogPost} className="space-y-6 rounded-xl border border-border p-6 bg-accent/10">
+        <input type="hidden" name="id" value={post.id} />
+        
         <div className="space-y-2">
           <label htmlFor="title" className="text-sm font-medium text-foreground">Title</label>
           <input
@@ -20,6 +31,7 @@ export default function NewBlogPage() {
             name="title"
             type="text"
             required
+            defaultValue={post.title}
             className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
@@ -31,6 +43,7 @@ export default function NewBlogPage() {
             name="slug"
             type="text"
             required
+            defaultValue={post.slug}
             className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
@@ -41,6 +54,7 @@ export default function NewBlogPage() {
             id="coverImage"
             name="coverImage"
             type="text"
+            defaultValue={post.coverImage || ""}
             className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
@@ -63,6 +77,7 @@ export default function NewBlogPage() {
             name="content"
             rows={10}
             required
+            defaultValue={post.content}
             className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary font-mono"
           ></textarea>
         </div>
@@ -72,6 +87,7 @@ export default function NewBlogPage() {
             type="checkbox"
             id="published"
             name="published"
+            defaultChecked={post.published}
             className="h-4 w-4 rounded border-border text-primary focus:ring-primary"
           />
           <label htmlFor="published" className="text-sm font-medium text-foreground">
@@ -79,7 +95,7 @@ export default function NewBlogPage() {
           </label>
         </div>
 
-        <Button type="submit">Create Post</Button>
+        <Button type="submit">Update Post</Button>
       </form>
     </div>
   )

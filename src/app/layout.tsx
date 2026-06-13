@@ -30,7 +30,7 @@ export default async function RootLayout({
   }
 
   return (
-    <html lang="en" data-weather="clear" suppressHydrationWarning>
+    <html lang="en" data-weather="summer" suppressHydrationWarning>
       {designConfig && (
         <head>
           {/* Author's design preset: re-skins the base (Clear) theme only.

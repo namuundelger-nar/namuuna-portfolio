@@ -38,6 +38,9 @@ export default async function AdminBlogsPage() {
                   {new Date(post.createdAt).toLocaleDateString()}
                 </td>
                 <td className="px-4 py-3 text-right space-x-2">
+                  <Link href={`/admin/blogs/${post.id}`}>
+                    <Button variant="outline" size="sm">Edit</Button>
+                  </Link>
                   <form action={deleteBlogPost.bind(null, post.id)} className="inline">
                     <Button variant="outline" size="sm" className="text-red-500 hover:bg-red-500/10 hover:text-red-500">Delete</Button>
                   </form>

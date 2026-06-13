@@ -38,6 +38,16 @@ export default async function AdminProfilePage() {
               />
               <p className="text-xs text-muted-foreground">Path to an image in the public folder (e.g. `/my-photo.jpg`) or an external URL.</p>
             </div>
+            <div className="space-y-2 mt-4">
+              <label htmlFor="file" className="text-sm font-medium text-foreground">Or Upload New Photo</label>
+              <input
+                id="file"
+                name="file"
+                type="file"
+                accept="image/*"
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+              />
+            </div>
           </div>
         </div>
 
