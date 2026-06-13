@@ -82,10 +82,11 @@ model Certification {
 }
 
 model BlogPost {
-  id        String   @id @default(cuid())
-  title     String
-  slug      String   @unique
-  content   String   // Markdown or HTML
+  id         String   @id @default(cuid())
+  title      String
+  slug       String   @unique
+  content    String   // Markdown or HTML
+  coverImage String?  // Hero/stock image URL
   published Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

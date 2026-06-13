@@ -47,20 +47,20 @@
   --color-outline-variant: var(--line);
   --color-error: #ba1a1a;
 
-  /* Fonts */
-  --font-sans: var(--font-albert), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, Menlo, monospace;
+  /* Fonts — families ship as npm packages (see layout.tsx imports) */
+  --font-sans: "Albert Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces Variable", ui-serif, Georgia, serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, Menlo, monospace;
   /* legacy font utilities used by unmigrated pages */
-  --font-body-md: var(--font-albert);
-  --font-body-lg: var(--font-albert);
-  --font-label-sm: var(--font-albert);
-  --font-label-md: var(--font-albert);
-  --font-headline-sm: var(--font-fraunces);
-  --font-headline-md: var(--font-fraunces);
-  --font-headline-lg: var(--font-fraunces);
-  --font-display-lg: var(--font-fraunces);
-  --font-display-md: var(--font-fraunces);
+  --font-body-md: "Albert Sans Variable";
+  --font-body-lg: "Albert Sans Variable";
+  --font-label-sm: "Albert Sans Variable";
+  --font-label-md: "Albert Sans Variable";
+  --font-headline-sm: "Fraunces Variable";
+  --font-headline-md: "Fraunces Variable";
+  --font-headline-lg: "Fraunces Variable";
+  --font-display-lg: "Fraunces Variable";
+  --font-display-md: "Fraunces Variable";
 }
 
 /* ---------- Weather palettes ----------
@@ -102,16 +102,17 @@
   --sky: linear-gradient(165deg, #d8e3ee 0%, #e9eff5 50%, #f4f7f9 100%);
 }
 
+/* Rain — neon Tokyo at night: violet sky, cyan/pink glow */
 [data-weather="rain"] {
-  --paper: #0f1922;
-  --ink: #e9f1f6;
-  --ink-soft: #93a9b8;
-  --glacier: #7db8de;
-  --teal: #6fc2c9;
-  --haze: #1a2835;
-  --line: rgba(233, 241, 246, 0.16);
-  --card: rgba(17, 30, 41, 0.62);
-  --sky: linear-gradient(180deg, #0b141c 0%, #11202c 55%, #152734 100%);
+  --paper: #0c0f1d;
+  --ink: #eceaf8;
+  --ink-soft: #9da1c4;
+  --glacier: #4cc9f0;
+  --teal: #ff6ec7;
+  --haze: #171b33;
+  --line: rgba(236, 234, 248, 0.16);
+  --card: rgba(17, 19, 41, 0.62);
+  --sky: linear-gradient(180deg, #06081a 0%, #101430 55%, #1c1038 100%);
 }
 
 [data-weather="ocean"] {
@@ -173,11 +174,44 @@
 }
 .wx-streak {
   width: 1px;
-  background: linear-gradient(to bottom, transparent, rgba(173, 208, 232, 0.55));
+  background: linear-gradient(to bottom, transparent, rgba(76, 201, 240, 0.65));
   border-radius: 99px;
 }
+.wx-streak-pink {
+  background: linear-gradient(to bottom, transparent, rgba(255, 110, 199, 0.5));
+}
 .wx-mist {
-  background: linear-gradient(to top, rgba(125, 184, 222, 0.10), transparent);
+  background: linear-gradient(to top, rgba(124, 77, 255, 0.12), transparent);
+}
+/* Neon city glow for Tokyo rain */
+.wx-neon {
+  border-radius: 999px;
+  filter: blur(90px);
+  mix-blend-mode: screen;
+  animation: wx-neon-pulse 6s ease-in-out infinite;
+}
+.wx-neon-pink { background: #ff2e92; }
+.wx-neon-cyan { background: #28d8ff; animation-delay: -2s; }
+.wx-neon-violet { background: #7b2ff7; animation-delay: -4s; }
+.wx-city-glow {
+  background: linear-gradient(to top, rgba(255, 46, 146, 0.22) 0%, rgba(123, 47, 247, 0.12) 35%, rgba(40, 216, 255, 0.06) 60%, transparent 100%);
+}
+@keyframes wx-neon-pulse {
+  0%, 100% { opacity: 0.30; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(1.12); }
+}
+/* Ocean — real water photo anchored to the horizon, swelling slowly */
+.wx-ocean-photo {
+  background-image: url("/realistic-ocean.jpg");
+  background-size: cover;
+  background-position: center 65%;
+  mask-image: linear-gradient(to top, black 60%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to top, black 60%, transparent 100%);
+  animation: wx-ocean-pan 16s ease-in-out infinite;
+}
+@keyframes wx-ocean-pan {
+  0%, 100% { transform: scale(1.04) translateY(0); }
+  50% { transform: scale(1.12) translateY(-1.5%); }
 }
 .wx-wave {
   background: linear-gradient(to top, rgba(72, 169, 192, 0.35), transparent);
@@ -257,12 +291,12 @@
 
 /* ---------- Editorial primitives ---------- */
 .display {
-  font-family: var(--font-fraunces), serif;
+  font-family: "Fraunces Variable", serif;
   font-optical-sizing: auto;
   letter-spacing: -0.02em;
 }
 .eyebrow {
-  font-family: var(--font-jetbrains-mono), monospace;
+  font-family: "JetBrains Mono Variable", monospace;
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -283,7 +317,7 @@
   border-radius: 999px 999px 28px 28px;
 }
 .ghost-word {
-  font-family: var(--font-fraunces), serif;
+  font-family: "Fraunces Variable", serif;
   color: transparent;
   -webkit-text-stroke: 1px var(--line);
   user-select: none;
@@ -297,6 +331,21 @@
 }
 .link-line:hover {
   background-size: 100% 1.5px;
+}
+
+/* Reading pulse — a soft highlight sweeps through the text like a reader's eye */
+.read-sweep {
+  background: linear-gradient(100deg, var(--ink) 0%, var(--ink) 38%, var(--glacier) 50%, var(--ink) 62%, var(--ink) 100%);
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: read-sweep 8s ease-in-out infinite;
+}
+@keyframes read-sweep {
+  0% { background-position: 100% 0; }
+  60%, 100% { background-position: -150% 0; }
 }
 
 /* Entrance + scroll reveals */
@@ -362,7 +411,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .wx-flake, .wx-streak, .wx-wave, .wx-halo,
+  .wx-flake, .wx-streak, .wx-wave, .wx-halo, .wx-neon, .wx-ocean-photo, .read-sweep,
   .wx-icon-rays, .wx-icon-bob, .wx-icon-drop, .wx-icon-gust, .wx-icon-swell,
   .marquee-track, .pulse-dot::after {
     animation: none !important;
