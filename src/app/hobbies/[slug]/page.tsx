@@ -67,6 +67,11 @@ const hobbiesData: Record<string, {
   }
 }
 
+export function generateStaticParams() {
+  return Object.keys(hobbiesData).map((slug) => ({
+    slug,
+  }))
+}
 export default async function HobbyPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const hobby = hobbiesData[slug]

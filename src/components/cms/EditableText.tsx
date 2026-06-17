@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState, useTransition } from "react"
-import { updateContentBlock } from "@/app/actions/content"
+import { updateContentBlock } from "@/lib/cms-client"
 
 /**
  * Click-to-edit text. Render-only for visitors; contentEditable for the

@@ -4,13 +4,29 @@ import Link from "next/link"
 import { Navbar } from "@/components/layout/Navbar"
 
 interface Props {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
+}
+
+export async function generateStaticParams() {
+  const posts = await prisma.blogPost.findMany({
+    select: { slug: true },
+  })
+
+  const slugs = [
+    { slug: "whispers-of-the-python-forest" },
+    ...posts.map((post) => ({
+      slug: post.slug,
+    })),
+  ]
+
+  return slugs
 }
 
 export default async function PythonPostPage({ params }: Props) {
+  const { slug } = await params
   // If we can't find the slug in the DB, we will display the breathtaking mock article from the design!
   let post = await prisma.blogPost.findUnique({
-    where: { slug: params.slug }
+    where: { slug }
   })
 
   // Mock data representing the perfect "Whispers of the Python Forest" layout

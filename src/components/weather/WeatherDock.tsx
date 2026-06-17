@@ -7,17 +7,7 @@ import { useWeather } from "./WeatherProvider"
 /** Animated icon per mode — pure CSS/SVG, animated even while idle. */
 function WeatherIcon({ id }: { id: WeatherId }) {
   switch (id) {
-    case "clear":
-      return (
-        <svg viewBox="0 0 24 24" className="wx-icon" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-          <g className="wx-icon-rays">
-            {[0, 45, 90, 135, 180, 225, 270, 315].map((r) => (
-              <line key={r} x1="12" y1="2.5" x2="12" y2="5" transform={`rotate(${r} 12 12)`} />
-            ))}
-          </g>
-          <circle cx="12" cy="12" r="4" fill="currentColor" stroke="none" />
-        </svg>
-      )
+
     case "summer":
       return (
         <svg viewBox="0 0 24 24" className="wx-icon" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">

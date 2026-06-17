@@ -25,14 +25,34 @@ export function WeatherEffects({ weather }: { weather: WeatherId }) {
   const [parts, setParts] = useState<P[]>([])
   const [ready, setReady] = useState(false)
 
+  // Provide a normalized scroll percentage (0 to 1) for smooth parallax
+  useEffect(() => {
+    let ticking = false
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+          if (maxScroll > 0) {
+            const pct = Math.max(0, Math.min(1, window.scrollY / maxScroll))
+            document.documentElement.style.setProperty("--scroll-pct", pct.toString())
+          }
+          ticking = false
+        })
+        ticking = true
+      }
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    handleScroll() // init
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
+
   useEffect(() => {
     const counts: Record<WeatherId, number> = {
-      clear: 0,
       summer: 35,
       snow: 48,
       rain: 64,
       windsnow: 44,
-      autumn: 55,
+      autumn: 25,
     }
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setParts(
@@ -67,16 +87,19 @@ export function WeatherEffects({ weather }: { weather: WeatherId }) {
       {/* Sky gradient from [data-weather] CSS vars */}
       <div className="wx-sky absolute inset-0" />
 
-      {/* ───── Clear: clean, minimal — no sun, just atmosphere ───── */}
-      {weather === "clear" && (
-        <div className="wx-haze absolute bottom-0 left-0 right-0 h-[30vh]" />
-      )}
-
-      {/* ───── Summer: the sun mode — golden halo + fireflies ───── */}
-      {weather === "summer" && (
-        <>
-          <div className="wx-sun-halo absolute -top-32 right-[8%] w-[40rem] h-[40rem] rounded-full" />
-          <div className="wx-heat-shimmer absolute bottom-0 left-0 right-0 h-[25vh]" />
+      {/* Parallax layer: moves slightly opposite to scroll direction to create depth */}
+      <div 
+        className="absolute -inset-y-[30vh] inset-x-0"
+        style={{ transform: "translateY(calc(15vh - (var(--scroll-pct, 0) * 30vh)))", transition: "transform 0.1s ease-out" }}
+      >
+        {/* ───── Summer: the sun mode — golden halo + fireflies ───── */}
+        {weather === "summer" && (
+          <>
+            <div
+              className="wx-sun-halo absolute top-[15vh] right-[5%] rounded-full"
+              style={{ width: "30rem", height: "30rem" }}
+            />
+            <div className="wx-heat-shimmer absolute bottom-[20vh] left-0 right-0 h-[25vh]" />
           {parts.map((p) => (
             <span
               key={p.id}
@@ -164,18 +187,17 @@ export function WeatherEffects({ weather }: { weather: WeatherId }) {
               "wx-leaf wx-leaf-3",
               "wx-leaf wx-leaf-4",
             ]
-            // Smaller sizes — ambient, not attention-grabbing
-            const leafSize = 4 + p.size * 1.2
+            // Much smaller sizes so they fade into the background like light rain
+            const leafSize = 4 + p.size * 1.5
             return (
               <span
                 key={p.id}
                 className={`${leafClasses[variant]} absolute`}
                 style={{
                   left: `${p.left}%`,
-                  width: leafSize,
-                  height: leafSize,
-                  filter: p.blur ? "blur(1.5px)" : undefined,
-                  animation: `wx-leaf-drift ${p.duration}s linear ${p.delay}s infinite`,
+                  width: `${leafSize}px`,
+                  height: `${leafSize}px`,
+                  animation: `wx-leaf-drift ${p.duration * 1.5}s linear ${p.delay}s infinite`,
                 }}
               />
             )
@@ -183,6 +205,7 @@ export function WeatherEffects({ weather }: { weather: WeatherId }) {
           <div className="wx-autumn-ground absolute bottom-0 left-0 right-0 h-[10vh]" />
         </>
       )}
+      </div>
     </div>
   )
 }

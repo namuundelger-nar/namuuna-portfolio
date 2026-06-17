@@ -6,6 +6,16 @@ import { Footer } from "@/components/layout/Footer"
 
 const dateFmt = new Intl.DateTimeFormat("en", { month: "long", day: "numeric", year: "numeric" })
 
+export async function generateStaticParams() {
+  const posts = await prisma.blogPost.findMany({
+    where: { published: true },
+    select: { slug: true },
+  })
+  return posts.map((post) => ({
+    slug: post.slug,
+  }))
+}
+
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const post = await prisma.blogPost.findUnique({ where: { slug } })

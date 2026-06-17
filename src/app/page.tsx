@@ -92,7 +92,7 @@ export default async function Home() {
             <p className="display text-2xl md:text-4xl leading-snug max-w-4xl">
               {profile.bio.split(" ").map((word, i) => (
                 <span key={i}>
-                  <span className="animate-wave-word" style={{ animationDelay: `${0.2 + (0.05 * i)}s` }}>
+                  <span className="animate-word-rise" style={{ animationDelay: `${0.2 + (0.05 * i)}s` }}>
                     {word}
                   </span>
                   {" "}

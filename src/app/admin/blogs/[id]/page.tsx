@@ -4,6 +4,15 @@ import { updateBlogPost } from "@/app/actions/blog"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
+export async function generateStaticParams() {
+  const posts = await prisma.blogPost.findMany({
+    select: { id: true },
+  })
+  return posts.map((post) => ({
+    id: post.id,
+  }))
+}
+
 export default async function EditBlogPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const post = await prisma.blogPost.findUnique({ where: { id } })

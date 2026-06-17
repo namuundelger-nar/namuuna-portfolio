@@ -4,7 +4,7 @@ import { useWeather } from "@/components/weather/WeatherProvider"
 import type { WeatherId } from "@/lib/weather"
 
 const greetings: Record<WeatherId, { icon: string; text: string }> = {
-  clear: { icon: "✨", text: "Clear skies" },
+
   summer: { icon: "☀️", text: "Summer vibes" },
   rain: { icon: "🌧️", text: "Spring showers" },
   snow: { icon: "❄️", text: "Winter wonder" },
