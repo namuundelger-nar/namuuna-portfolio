@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma"
 import { Navbar } from "@/components/layout/Navbar"
 import { Footer } from "@/components/layout/Footer"
 import { Reveal } from "@/components/Reveal"
+import { getAssetPath } from "@/lib/utils"
 
 export const metadata = { title: "CV — Namuundelger Narmandakh" }
 
@@ -31,7 +32,7 @@ export default async function CVPage() {
               <Reveal>
                 <div className="arch overflow-hidden card-air p-2 max-w-[260px]">
                   <img
-                    src={profile?.imageUrl || "/profile-2.jpg"}
+                    src={getAssetPath(profile?.imageUrl || "/profile-2.jpg")}
                     alt={profile?.name ?? "Portrait"}
                     className="arch w-full aspect-[4/5] object-cover"
                   />

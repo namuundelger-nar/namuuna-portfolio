@@ -6,6 +6,7 @@ import { JourneyMap } from "@/components/JourneyMap"
 import { Reveal } from "@/components/Reveal"
 import { Editable } from "@/components/cms/Editable"
 import { SeasonBadge } from "@/components/weather/SeasonBadge"
+import { getAssetPath } from "@/lib/utils"
 
 export default async function Home() {
   const [profile, projects, skills] = await Promise.all([
@@ -72,7 +73,7 @@ export default async function Home() {
               <div className="relative max-w-sm ml-auto">
                 <div className="arch overflow-hidden card-air profile-ring p-2.5">
                   <img
-                    src={profile.imageUrl || "/profile-1.jpg"}
+                    src={getAssetPath(profile.imageUrl || "/profile-1.jpg")}
                     alt={profile.name}
                     className="arch w-full aspect-[4/5] object-cover"
                   />
